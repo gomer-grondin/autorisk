@@ -17,13 +17,15 @@ rm -f $STATEDIR/gamestatus # HACK .. fix later
 DEBUG=' -d '
 test -n "$1" || unset DEBUG
 
+MODE=local
+
 GPG=$(cat <<HERE
-Bowen C49DB35D 
-Jared EB3D2B30 
-Connor C7C19630 
-Christopher 30F6BDE6 
-Andrew EF2C8000 
-Trevor FB236D42
+Risk::General Bowen C49DB35D 
+Risk::General Jared EB3D2B30 
+Risk::General Connor C7C19630 
+Risk::General Christopher 30F6BDE6 
+Risk::General::Lee Andrew EF2C8000 
+Risk::General Trevor FB236D42
 HERE
 )
 
@@ -31,10 +33,11 @@ HERE
 # delete all the shares of past games
 ls -1t ../state | grep 139 | perl ../ipcshare_clean.pl > /dev/null
 
-echo "$GPG" | while read n k ; do
-  CMD=". ../config && perl -I ../modules $DEBUG ./general.pl name=$n keyid=$k "
-  CMD=$CMD"mapid=map1000 mode=tournament soapserver=localhost soapport=38087 &"
+echo "$GPG" | while read m n k ; do
+  cat template.pl | sed "s/MODULE/$m/g" > ${n}.pl
+  CMD=". ../config && perl -I ../modules $DEBUG ${n}.pl name=$n keyid=$k "
+  CMD=$CMD"mapid=map1000 mode=$MODE soapserver=localhost soapport=38087 "
+  CMD=$CMD"> ${n}.log 2>&1 &"
   echo $CMD
-  echo sleep 2
 done
 echo wait
