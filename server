@@ -1,0 +1,27 @@
+#!/usr/bin/perl -w
+
+eval { require SOAP::Transport::HTTP::Daemon::preFork } or die <<EOW;
+$@
+  WARNING: module for Daemon::preFork is not installed by default.
+  It's in examples/SOAP/Transport/HTTP/ directory
+  you can install it yourself.
+  Feel free to modify it. It's just an example.
+EOW
+
+$SIG{PIPE} = 'IGNORE'; # don't want to die on 'Broken pipe' or Ctrl-C
+#$SIG{CHLD} = 'IGNORE';             # do not create zombies
+my $SERVER = shift;
+my $PORT = shift;
+my $PREFORK = shift;
+
+my $daemon = SOAP::Transport::HTTP::Daemon::preFork
+  -> new (LocalAddr => $SERVER, LocalPort => $PORT, Listen => 4, Reuse => 1)
+  # you may also add other options, like 'Reuse' => 1 and/or 'Listen' => 128
+  # specify list of objects-by-reference here 
+  -> objects_by_reference(qw(My::PersistentIterator My::SessionIterator My::Chat))
+  # specify path to My/Examples.pm here
+  -> dispatch_to("$ENV{HOME}/soapy/modules", 'soapy' );
+;
+print "Contact to SOAP server at ", $daemon->url, "\n";
+$|=1;
+$daemon->handle( $PREFORK );
