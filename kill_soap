@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+#  kill_soap .. first kill parent, then the children
+#
+
+function kill_soap { # start by killing the youngest
+  K=$1
+  if test -n "$K" ; then
+     S=`pgrep -P $K` # child processes .. save for later
+     kill $K || kill -9 $K
+     sleep 1
+     for s in $S ; do kill $s || kill -9 $s ; done
+  fi
+}
+
+kill_soap $1
+
+

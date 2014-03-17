@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+#  kill_offspring .. recursively kill processes
+#    starting with the youngest
+#
+
+function kill_offspring { # start by killing the youngest
+  K=$1
+  if test -n "$K" ; then
+     for p in `pgrep -P $K` ; do kill_offspring $p ; done
+  fi
+  sleep 1  # delay to allow for cleanup
+  kill $K || kill -9 $K
+}
+
+kill_offspring $1
+
+

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export BASE=$HOME/soapy
+export PGPLOCK=$BASE/pgplock
+export PGPLOG=$BASE/pgplog
+export LOG=$BASE/log
+export SOAPLOG=$BASE/soaplog
+export SOAPLOCK=$BASE/soaplock
+export PANIC=$BASE/panic
+export STATEDIR=$BASE/state
+

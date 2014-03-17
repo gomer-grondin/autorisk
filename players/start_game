@@ -1,0 +1,40 @@
+#!/usr/bin/bash
+#
+#
+# start a new game ..
+#
+#
+
+function barf {
+  echo "$*"
+  exit 111
+} 
+
+. ../config
+test -n "$STATEDIR" || barf "check config .. no STATEDIR";
+rm -f $STATEDIR/gamestatus # HACK .. fix later
+
+DEBUG=' -d '
+test -n "$1" || unset DEBUG
+
+GPG=$(cat <<HERE
+Bowen C49DB35D 
+Jared EB3D2B30 
+Connor C7C19630 
+Christopher 30F6BDE6 
+Andrew EF2C8000 
+Trevor FB236D42
+HERE
+)
+
+
+# delete all the shares of past games
+ls -1t ../state | grep 139 | perl ../ipcshare_clean.pl > /dev/null
+
+echo "$GPG" | while read n k ; do
+  CMD=". ../config && perl -I ../modules $DEBUG ./general.pl name=$n keyid=$k "
+  CMD=$CMD"mapid=map1000 mode=tournament soapserver=localhost soapport=38087 &"
+  echo $CMD
+  echo sleep 2
+done
+echo wait
