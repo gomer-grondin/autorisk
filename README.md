@@ -18,6 +18,11 @@ These files are only used for tournament mode:
   gnupg (install to your .gnupg or use your own)
   
   
-The gd.pl file may be a good starting place for understanding the details of the protocol between player and server.  the log files that are input to this script are in the same format as the status messages that the server sends to you when it is your turn.  the 'input' section of this structure shows what the server expects when you make your manuever.  The generated png files from this script should give you a good idea what the log files contain.  NOTE:  I've recently added a 'stats' section to the log files but have not rendered them on the png files.  This section keeps track of dice rolls and results of battles.  Those of you who wish to ignore the law of independent trials may find this useful in your decision tree.  
+The gd.pl file may be a good starting place for understanding the details of the protocol between player and server.  the log files that are input to this script are in the same format as the status messages that the server sends to you when it is your turn.  the 'input' section of this structure shows what the server expects when you make your manuever.  The generated png files from this script should give you a good idea what the log files contain.  NOTE:  I've recently added a 'stats' section to the log files but have not rendered them on the png files.  This section keeps track of dice rolls and results of battles.  Those of you who wish to ignore the law of independent trials may find this useful in your decision tree. 
+
+cron entry (from crontab) for finding log files and creating png files you may need to alter for your environment 
+* * * * * find $HOME/soapy/state/ -name \*log | while read f ; do test -f ${f}.png && continue ; cat $f | perl -I $HOME/soapy/modules $HOME/soapy/gd.pl > ${f}.png ; done
+
+Also, inspect and modify the 'config' file to taste.  The players/start_game script uses it as well as the soap server.
 
 thanks to Maggie for recommending that I punch up this README, I had been relying on the youtube videos.  Your input is also solicited.
