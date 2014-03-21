@@ -337,7 +337,7 @@ sub _soapy {
   my( $self, $input, $method, @args ) = @_;
 
   if( $input->{mode} eq 'local' ) {
-    my $hash = soapy->$method( encode_json( $input ) );
+    my $hash = soapy->$method( $input );
     return { hash => $hash };
   }
 
